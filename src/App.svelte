@@ -1,5 +1,6 @@
 <script>
 	import ML5 from "ml5";
+	import Editor from "./Editor.svelte";
 
 	let seedInput = "Once upon a time ";
 	let temperatureInput = 0.5;
@@ -42,6 +43,15 @@
 	</button>
 	<br/>
 	<textarea readonly bind:value={modelOutput}/>
+
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+
+	<Editor />
 </main>
 
 <style>
