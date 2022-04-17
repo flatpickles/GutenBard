@@ -1,15 +1,22 @@
 <script>
-	export let name;
-
+	export let genText = "Loading...";
 	import ML5 from "ml5";
 
-	
+	// Create the character level generator with a pre trained model
+	const rnn = ML5.charRNN("models/hemingway/", modelLoaded);
 
+	// When the model is loaded
+	function modelLoaded() {
+		// Generate content
+		rnn.generate({ seed: "the meaning of pizza is" }, (err, results) => {
+			console.log(results);
+			genText = results.sample;
+		});
+	}
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<p>{genText}</p>
 </main>
 
 <style>
