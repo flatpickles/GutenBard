@@ -9,28 +9,25 @@ export class Generator {
     temperature = 0.5;
     length = 30;
 
-    loadModel(name) {
+    async loadModel(name) {
         const modelPath = Generator.models[name];
         this.modelLoaded = false;
         const self = this;
         this.rnn = ML5.charRNN(modelPath, (result) => {
-            console.log(result);
             self.modelLoaded = true;
         });
+        return(this.rnn.ready);
     }
 
-    generate(seedInput) {
+    async generate(seedInput) {
         if (this.modelLoaded) {
             const data = {
                 seed: seedInput,
                 temperature: this.temperature,
                 length: this.length
             };
-            // to do: promisify? Cancel earlier ones?
-            console.log(this.rnn.generate(data, (err, results) => {
-                const oneLineResults = results.sample.replace(/(\r\n|\n|\r)/gm, "");
-                modelOutput = seedInput + oneLineResults;
-            }));
+            // to do: Cancel earlier ones?
+            return(this.rnn.generate(data));
         }
     }
 }

@@ -13,6 +13,10 @@
         textContent = "Once upon a time ";
         editorDiv.focus();
         updateTextStyle();
+
+        generator.loadModel("Hemingway").then(() => {
+            console.log(generator.generate("snack atack "));
+        });
     });
 
     function updateTextStyle() {

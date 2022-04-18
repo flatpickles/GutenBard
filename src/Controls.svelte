@@ -11,8 +11,6 @@
     }
 </script>
 
-
-
 <div class="wrapper">
     {#if controlsOpen}
     <div class="controls" transition:slide>
