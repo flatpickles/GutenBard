@@ -1,9 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import { CursorHandler } from "./CursorHandler.js";
+    import { Generator } from "./Generator.js";
 
     let editorDiv;
     let textContent;
+    let generator = new Generator();
 
     $: cursorHandler = new CursorHandler(editorDiv);
 

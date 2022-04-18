@@ -1,7 +1,10 @@
 <script>
-    import { fade } from 'svelte/transition';
+    import { slide } from 'svelte/transition';
 
     let controlsOpen = false;
+
+    let temperatureInput = 0.5;
+    let lengthInput = 20;
 
     function toggleOpen() {
         controlsOpen = !controlsOpen;
@@ -12,8 +15,9 @@
 
 <div class="wrapper">
     {#if controlsOpen}
-    <div class="controls" transition:fade>
-        These are the controls
+    <div class="controls" transition:slide>
+        <label for="temperature">Temperature: {temperatureInput}</label><input name="temperature" type=range bind:value={temperatureInput} min=0 max=1 step=0.01>
+        <label for="length">Length: {lengthInput}</label><input name="length" type=range bind:value={lengthInput} min=1 max=100>
     </div>
     {/if}
     <button class="showhide" on:click={toggleOpen}>
@@ -30,7 +34,7 @@
         width: 100%;
         display: flex;
         justify-content: flex-end;
-        align-items: center;
+        align-items: top;
     }
 
     .controls {
