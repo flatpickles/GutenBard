@@ -1,5 +1,6 @@
 <script>
 	import ML5 from "ml5";
+	import Controls from "./Controls.svelte";
 	import Editor from "./Editor.svelte";
 
 	let seedInput = "Once upon a time ";
@@ -51,12 +52,12 @@
 	<br/>
 	<br/>
 
+	<Controls/>
 	<Editor />
 </main>
 
 <style>
 	main {
-		text-align: center;
 		padding: 1em;
 		max-width: 500px;
 		margin: 0 auto;

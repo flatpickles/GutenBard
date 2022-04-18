@@ -8,7 +8,7 @@
     $: cursorHandler = new CursorHandler(editorDiv);
 
     onMount(async () => {
-        textContent = "Once upon a time...";
+        textContent = "Once upon a time ";
         editorDiv.focus();
         updateTextStyle();
     });

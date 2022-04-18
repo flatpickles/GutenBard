@@ -1,4 +1,4 @@
-// Via https://stackoverflow.com/a/62700928
+// Adapted from https://stackoverflow.com/a/62700928
 
 export class CursorHandler {
     constructor(divElement) {
