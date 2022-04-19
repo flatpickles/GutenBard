@@ -1,5 +1,3 @@
-import ML5 from "ml5";
-
 export class Generator {
     static models = {
         "Hemingway": "models/hemingway/"
@@ -13,7 +11,7 @@ export class Generator {
         const modelPath = Generator.models[name];
         this.modelLoaded = false;
         const self = this;
-        this.rnn = ML5.charRNN(modelPath, (result) => {
+        this.rnn = ml5.charRNN(modelPath, (result) => {
             self.modelLoaded = true;
         });
         return(this.rnn.ready);

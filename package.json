@@ -18,7 +18,6 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
-    "ml5": "^0.12.1",
     "sirv-cli": "^2.0.0"
   }
 }
