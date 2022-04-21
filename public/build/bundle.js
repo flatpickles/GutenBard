@@ -1171,15 +1171,15 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-6tt431");
-    			if (/*textContent*/ ctx[1] === void 0) add_render_callback(() => /*div_input_handler*/ ctx[4].call(div));
-    			add_location(div, file$1, 39, 0, 1187);
+    			if (/*textContent*/ ctx[1] === void 0) add_render_callback(() => /*div_input_handler*/ ctx[5].call(div));
+    			add_location(div, file$1, 44, 0, 1338);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			/*div_binding*/ ctx[3](div);
+    			/*div_binding*/ ctx[4](div);
 
     			if (/*textContent*/ ctx[1] !== void 0) {
     				div.textContent = /*textContent*/ ctx[1];
@@ -1187,8 +1187,9 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(div, "input", /*div_input_handler*/ ctx[4]),
-    					listen_dev(div, "input", /*updateTextStyle*/ ctx[2], false, false, false)
+    					listen_dev(div, "input", /*div_input_handler*/ ctx[5]),
+    					listen_dev(div, "keydown", /*updateDelayed*/ ctx[3], false, false, false),
+    					listen_dev(div, "click", /*updateEditor*/ ctx[2], false, false, false)
     				];
 
     				mounted = true;
@@ -1203,7 +1204,7 @@ var app = (function () {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
-    			/*div_binding*/ ctx[3](null);
+    			/*div_binding*/ ctx[4](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -1231,14 +1232,14 @@ var app = (function () {
     	onMount(async () => {
     		$$invalidate(1, textContent = "Once upon a time ");
     		editorDiv.focus();
-    		updateTextStyle();
+    		updateEditor();
 
     		generator.loadModel("Hemingway").then(() => {
     			console.log(generator.generate("snack atack "));
     		});
     	});
 
-    	function updateTextStyle() {
+    	function updateEditor() {
     		const caretOffset = cursorHandler.getCurrentCursorPosition();
     		const primaryText = textContent.substring(0, caretOffset);
     		const secondaryText = textContent.substring(caretOffset, textContent.length);
@@ -1246,6 +1247,11 @@ var app = (function () {
     		const secondaryTextHTML = "<span class='secondaryText'>" + secondaryText + "</span>";
     		$$invalidate(0, editorDiv.innerHTML = primaryTextHTML + secondaryTextHTML, editorDiv);
     		cursorHandler.setCurrentCursorPosition(caretOffset);
+    	}
+
+    	function updateDelayed() {
+    		// Update delayed for keydown, so that the cursor can move w/ arrow keys
+    		setTimeout(updateEditor, 50);
     	}
 
     	const writable_props = [];
@@ -1273,7 +1279,8 @@ var app = (function () {
     		editorDiv,
     		textContent,
     		generator,
-    		updateTextStyle,
+    		updateEditor,
+    		updateDelayed,
     		cursorHandler
     	});
 
@@ -1294,7 +1301,14 @@ var app = (function () {
     		}
     	};
 
-    	return [editorDiv, textContent, updateTextStyle, div_binding, div_input_handler];
+    	return [
+    		editorDiv,
+    		textContent,
+    		updateEditor,
+    		updateDelayed,
+    		div_binding,
+    		div_input_handler
+    	];
     }
 
     class Editor extends SvelteComponentDev {
@@ -1329,7 +1343,7 @@ var app = (function () {
     			create_component(controls.$$.fragment);
     			t = space();
     			create_component(editor.$$.fragment);
-    			attr_dev(main, "class", "svelte-vux8km");
+    			attr_dev(main, "class", "svelte-tjv8ly");
     			add_location(main, file, 5, 0, 102);
     		},
     		l: function claim(nodes) {

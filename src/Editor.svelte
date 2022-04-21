@@ -12,14 +12,14 @@
     onMount(async () => {
         textContent = "Once upon a time ";
         editorDiv.focus();
-        updateTextStyle();
+        updateEditor();
 
         generator.loadModel("Hemingway").then(() => {
             console.log(generator.generate("snack atack "));
         });
     });
 
-    function updateTextStyle() {
+    function updateEditor() {
         const caretOffset = cursorHandler.getCurrentCursorPosition();
 
         const primaryText = textContent.substring(0, caretOffset);
@@ -35,13 +35,19 @@
 
         cursorHandler.setCurrentCursorPosition(caretOffset);
     }
+
+    function updateDelayed() {
+        // Update delayed for keydown, so that the cursor can move w/ arrow keys
+        setTimeout(updateEditor, 50);
+    }
 </script>
 
 <div
     contenteditable="true"
     bind:this={editorDiv}
     bind:textContent
-    on:input={updateTextStyle}
+    on:keydown={updateDelayed}
+    on:click={updateEditor}
 />
 
 <style>

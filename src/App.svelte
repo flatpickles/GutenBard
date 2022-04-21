@@ -14,12 +14,4 @@
 		max-width: 500px;
 		margin: 0 auto;
 	}
-
-	input, textarea {
-		width: 100%;
-	}
-
-	textarea {
-		height: 10em;
-	}
 </style>
