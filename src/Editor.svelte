@@ -30,6 +30,8 @@
     }
 
     function updateEditor() {
+        // todo: don't update when selecting a range of text
+
         const caretPosition = caretHandler.getCurrentCaretPosition();
         console.log(editorDiv.textContent);
 
@@ -69,6 +71,10 @@
 <style>
     [contenteditable]:focus {
         outline: none;
+    }
+
+    div {
+        font-size: 22px;
     }
 
     :global(.primaryText) {
