@@ -1,17 +1,19 @@
 <script>
     import { onMount } from "svelte";
-    import { CursorHandler } from "./CursorHandler.js";
+    import { CaretHandler } from "./CaretHandler.js";
     import { Generator } from "./Generator.js";
 
+    // Svelte Props
     let editorDiv;
-    let textContent;
-    let generator = new Generator();
+    $: caretHandler = new CaretHandler(editorDiv);
 
-    $: cursorHandler = new CursorHandler(editorDiv);
+    // Instance variables
+    let generator = new Generator();
+    let lastCaretPosition = 0;
 
     onMount(async () => {
-        textContent = "Once upon a time ";
         editorDiv.focus();
+        editorDiv.textContent = "Once upon a time ";
         updateEditor();
 
         generator.loadModel("Hemingway").then(() => {
@@ -19,25 +21,40 @@
         });
     });
 
+    function generate(seed) {
+        // todo: actually use ML
+        // todo: cancel previous requests
+        setTimeout(() => {
+            displayText(seed, " and some nonsense ");
+        }, 500);
+    }
+
     function updateEditor() {
-        const caretOffset = cursorHandler.getCurrentCursorPosition();
+        const caretPosition = caretHandler.getCurrentCaretPosition();
+        console.log(editorDiv.textContent);
 
-        const primaryText = textContent.substring(0, caretOffset);
-        const secondaryText = textContent.substring(
-            caretOffset,
-            textContent.length
-        );
-        const primaryTextHTML =
-            "<span class='primaryText'>" + primaryText + "</span>";
-        const secondaryTextHTML =
-            "<span class='secondaryText'>" + secondaryText + "</span>";
+        let textBeforeCursor = editorDiv.textContent.substring(0, caretPosition);
+        let triggerGeneration = caretPosition > lastCaretPosition;
+        if (triggerGeneration) generate(textBeforeCursor);
+
+        const primaryText = editorDiv.textContent.substring(0, caretPosition);
+        const secondaryText = triggerGeneration ? "" : editorDiv.textContent.substring(caretPosition, editorDiv.textContent.length);
+        displayText(primaryText, secondaryText, caretPosition);
+    }
+
+    function displayText(primaryText, secondaryText, caretPosition) {
+        if (!caretPosition) {
+            caretPosition = caretHandler.getCurrentCaretPosition();
+        }
+        const primaryTextHTML = primaryText ? "<span class='primaryText'>" + primaryText + "</span>" : "";
+        const secondaryTextHTML = secondaryText ? "<span class='secondaryText'>" + secondaryText + "</span>" : "";
         editorDiv.innerHTML = primaryTextHTML + secondaryTextHTML;
-
-        cursorHandler.setCurrentCursorPosition(caretOffset);
+        caretHandler.setCurrentCaretPosition(caretPosition);
+        lastCaretPosition = caretPosition;
     }
 
     function updateDelayed() {
-        // Update delayed for keydown, so that the cursor can move w/ arrow keys
+        // Update delayed for keydown, so that the caret can move w/ arrow keys
         setTimeout(updateEditor, 50);
     }
 </script>
@@ -45,7 +62,6 @@
 <div
     contenteditable="true"
     bind:this={editorDiv}
-    bind:textContent
     on:keydown={updateDelayed}
     on:click={updateEditor}
 />

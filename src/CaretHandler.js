@@ -1,11 +1,11 @@
 // Adapted from https://stackoverflow.com/a/62700928
 
-export class CursorHandler {
+export class CaretHandler {
     constructor(divElement) {
         this.divElement = divElement;
     }
 
-    getCurrentCursorPosition() {
+    getCurrentCaretPosition() {
         var selection = window.getSelection(),
             charCount = -1,
             node;
@@ -36,7 +36,7 @@ export class CursorHandler {
         return charCount;
     }
 
-    setCurrentCursorPosition(chars) {
+    setCurrentCaretPosition(chars) {
         if (chars >= 0) {
             var selection = window.getSelection();
             

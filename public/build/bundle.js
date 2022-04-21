@@ -1031,12 +1031,12 @@ var app = (function () {
 
     // Adapted from https://stackoverflow.com/a/62700928
 
-    class CursorHandler {
+    class CaretHandler {
         constructor(divElement) {
             this.divElement = divElement;
         }
 
-        getCurrentCursorPosition() {
+        getCurrentCaretPosition() {
             var selection = window.getSelection(),
                 charCount = -1,
                 node;
@@ -1067,7 +1067,7 @@ var app = (function () {
             return charCount;
         }
 
-        setCurrentCursorPosition(chars) {
+        setCurrentCaretPosition(chars) {
             if (chars >= 0) {
                 var selection = window.getSelection();
                 
@@ -1171,40 +1171,30 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-6tt431");
-    			if (/*textContent*/ ctx[1] === void 0) add_render_callback(() => /*div_input_handler*/ ctx[5].call(div));
-    			add_location(div, file$1, 44, 0, 1338);
+    			add_location(div, file$1, 61, 0, 2194);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			/*div_binding*/ ctx[4](div);
-
-    			if (/*textContent*/ ctx[1] !== void 0) {
-    				div.textContent = /*textContent*/ ctx[1];
-    			}
+    			/*div_binding*/ ctx[3](div);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(div, "input", /*div_input_handler*/ ctx[5]),
-    					listen_dev(div, "keydown", /*updateDelayed*/ ctx[3], false, false, false),
-    					listen_dev(div, "click", /*updateEditor*/ ctx[2], false, false, false)
+    					listen_dev(div, "keydown", /*updateDelayed*/ ctx[2], false, false, false),
+    					listen_dev(div, "click", /*updateEditor*/ ctx[1], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*textContent*/ 2 && /*textContent*/ ctx[1] !== div.textContent) {
-    				div.textContent = /*textContent*/ ctx[1];
-    			}
-    		},
+    		p: noop,
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
-    			/*div_binding*/ ctx[4](null);
+    			/*div_binding*/ ctx[3](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -1222,16 +1212,19 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let cursorHandler;
+    	let caretHandler;
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Editor', slots, []);
     	let editorDiv;
-    	let textContent;
+
+    	// Instance variables
     	let generator = new Generator();
 
+    	let lastCaretPosition = 0;
+
     	onMount(async () => {
-    		$$invalidate(1, textContent = "Once upon a time ");
     		editorDiv.focus();
+    		$$invalidate(0, editorDiv.textContent = "Once upon a time ", editorDiv);
     		updateEditor();
 
     		generator.loadModel("Hemingway").then(() => {
@@ -1239,18 +1232,52 @@ var app = (function () {
     		});
     	});
 
+    	function generate(seed) {
+    		// todo: actually use ML
+    		// todo: cancel previous requests
+    		setTimeout(
+    			() => {
+    				displayText(seed, " and some nonsense ");
+    			},
+    			500
+    		);
+    	}
+
     	function updateEditor() {
-    		const caretOffset = cursorHandler.getCurrentCursorPosition();
-    		const primaryText = textContent.substring(0, caretOffset);
-    		const secondaryText = textContent.substring(caretOffset, textContent.length);
-    		const primaryTextHTML = "<span class='primaryText'>" + primaryText + "</span>";
-    		const secondaryTextHTML = "<span class='secondaryText'>" + secondaryText + "</span>";
+    		const caretPosition = caretHandler.getCurrentCaretPosition();
+    		console.log(editorDiv.textContent);
+    		let textBeforeCursor = editorDiv.textContent.substring(0, caretPosition);
+    		let triggerGeneration = caretPosition > lastCaretPosition;
+    		if (triggerGeneration) generate(textBeforeCursor);
+    		const primaryText = editorDiv.textContent.substring(0, caretPosition);
+
+    		const secondaryText = triggerGeneration
+    		? ""
+    		: editorDiv.textContent.substring(caretPosition, editorDiv.textContent.length);
+
+    		displayText(primaryText, secondaryText, caretPosition);
+    	}
+
+    	function displayText(primaryText, secondaryText, caretPosition) {
+    		if (!caretPosition) {
+    			caretPosition = caretHandler.getCurrentCaretPosition();
+    		}
+
+    		const primaryTextHTML = primaryText
+    		? "<span class='primaryText'>" + primaryText + "</span>"
+    		: "";
+
+    		const secondaryTextHTML = secondaryText
+    		? "<span class='secondaryText'>" + secondaryText + "</span>"
+    		: "";
+
     		$$invalidate(0, editorDiv.innerHTML = primaryTextHTML + secondaryTextHTML, editorDiv);
-    		cursorHandler.setCurrentCursorPosition(caretOffset);
+    		caretHandler.setCurrentCaretPosition(caretPosition);
+    		lastCaretPosition = caretPosition;
     	}
 
     	function updateDelayed() {
-    		// Update delayed for keydown, so that the cursor can move w/ arrow keys
+    		// Update delayed for keydown, so that the caret can move w/ arrow keys
     		setTimeout(updateEditor, 50);
     	}
 
@@ -1267,28 +1294,25 @@ var app = (function () {
     		});
     	}
 
-    	function div_input_handler() {
-    		textContent = this.textContent;
-    		$$invalidate(1, textContent);
-    	}
-
     	$$self.$capture_state = () => ({
     		onMount,
-    		CursorHandler,
+    		CaretHandler,
     		Generator,
     		editorDiv,
-    		textContent,
     		generator,
+    		lastCaretPosition,
+    		generate,
     		updateEditor,
+    		displayText,
     		updateDelayed,
-    		cursorHandler
+    		caretHandler
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('editorDiv' in $$props) $$invalidate(0, editorDiv = $$props.editorDiv);
-    		if ('textContent' in $$props) $$invalidate(1, textContent = $$props.textContent);
     		if ('generator' in $$props) generator = $$props.generator;
-    		if ('cursorHandler' in $$props) cursorHandler = $$props.cursorHandler;
+    		if ('lastCaretPosition' in $$props) lastCaretPosition = $$props.lastCaretPosition;
+    		if ('caretHandler' in $$props) caretHandler = $$props.caretHandler;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1297,18 +1321,11 @@ var app = (function () {
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*editorDiv*/ 1) {
-    			cursorHandler = new CursorHandler(editorDiv);
+    			caretHandler = new CaretHandler(editorDiv);
     		}
     	};
 
-    	return [
-    		editorDiv,
-    		textContent,
-    		updateEditor,
-    		updateDelayed,
-    		div_binding,
-    		div_input_handler
-    	];
+    	return [editorDiv, updateEditor, updateDelayed, div_binding];
     }
 
     class Editor extends SvelteComponentDev {
