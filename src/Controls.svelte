@@ -3,8 +3,9 @@
 
     let controlsOpen = false;
 
-    let temperatureInput = 0.5;
-    let lengthInput = 20;
+    let temperature = 0.5;
+    let generatorLength = 20;
+    let seedLength = 20;
 
     function fadeSlide(node, options) {
 		const slideTrans = slide(node, options)
@@ -25,8 +26,18 @@
 <div class="wrapper">
     {#if controlsOpen}
     <div class="controls" transition:fadeSlide="{{duration: 200}}">
-        <label for="temperature">Temperature: {temperatureInput}</label><input name="temperature" type=range bind:value={temperatureInput} min=0 max=1 step=0.01>
-        <label for="length">Length: {lengthInput}</label><input name="length" type=range bind:value={lengthInput} min=1 max=100>
+        <div>
+            <label for="temperature">Temperature: {temperature}</label>
+            <input name="temperature" type=range bind:value={temperature} min=0 max=1 step=0.01>
+        </div>
+        <div>
+            <label for="length">Seed Length: {seedLength}</label>
+            <input name="length" type=range bind:value={seedLength} min=1 max=100>
+        </div>
+        <div>
+            <label for="length">Gen Length: {generatorLength}</label>
+            <input name="length" type=range bind:value={generatorLength} min=1 max=100>
+        </div>
     </div>
     {/if}
     <span id="controlsGlyph" class:selected="{controlsOpen}" on:click={toggleOpen}>&#9881;</span>
@@ -47,6 +58,14 @@
         padding: 10px;
         margin-bottom: 20px;
         margin-right: 10px;
+        display: flex;
+        justify-content: space-around;
+        flex-flow: row wrap;
+        align-items: stretch;
+    }
+
+    input {
+        margin-bottom: 0;
     }
 
     #controlsGlyph {
