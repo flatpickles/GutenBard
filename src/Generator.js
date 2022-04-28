@@ -5,7 +5,9 @@ export class Generator {
     
     modelLoaded = false;
     temperature = 0.5;
-    length = 30;
+    inputLength = 30;
+    outputLength = 30;
+
 
     async loadModel(name) {
         const modelPath = Generator.models[name];
@@ -17,15 +19,24 @@ export class Generator {
         return(this.rnn.ready);
     }
 
-    async generate(seedInput) {
+    generate(seedInput, id, callback) {
         if (this.modelLoaded) {
+            // Prepare seed: shorten input & start with a full word
+            let seed = seedInput.substring(seedInput.length - this.inputLength);
+            seed = seed.substring(seed.indexOf(" ") + 1);
+
+            // Generate!
             const data = {
-                seed: seedInput,
+                seed: seed,
                 temperature: this.temperature,
-                length: this.length
+                length: this.outputLength
             };
-            // to do: Cancel earlier ones?
-            return(this.rnn.generate(data));
+            this.rnn.generate(data).then((generatedObj) => {
+                const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, "");
+                if (callback) callback(generatedText, id);
+            });
+        } else if (callback) {
+            callback(null, id);
         }
     }
 }

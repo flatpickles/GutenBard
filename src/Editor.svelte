@@ -10,34 +10,35 @@
     // Instance variables
     let generator = new Generator();
     let lastCaretPosition = 0;
+    let lastGeneratedTime = null;
 
     onMount(async () => {
         editorDiv.focus();
         editorDiv.textContent = "Once upon a time ";
         updateEditor();
 
-        generator.loadModel("Hemingway").then(() => {
-            console.log(generator.generate("snack atack "));
-        });
+        generator.loadModel("Hemingway");
     });
 
-    function generate(seed) {
-        // todo: actually use ML
-        // todo: cancel previous requests
-        setTimeout(() => {
-            displayText(seed, " and some nonsense ");
-        }, 500);
+    function generate(fullInput) {
+        const localTime = Date.now();
+        lastGeneratedTime = localTime;
+        generator.generate(fullInput, localTime, (generatedText, id) => {
+            if (id == lastGeneratedTime) {
+                displayText(fullInput, generatedText);
+            } else {
+                console.log("Cancelled");
+            }
+        });
     }
 
     function updateEditor() {
-        // todo: don't update when selecting a range of text
-
         const caretPosition = caretHandler.getCurrentCaretPosition();
-        console.log(editorDiv.textContent);
-
         let textBeforeCursor = editorDiv.textContent.substring(0, caretPosition);
         let triggerGeneration = caretPosition > lastCaretPosition;
-        if (triggerGeneration) generate(textBeforeCursor);
+        if (triggerGeneration) {
+            generate(textBeforeCursor);
+        }
 
         const primaryText = editorDiv.textContent.substring(0, caretPosition);
         const secondaryText = triggerGeneration ? "" : editorDiv.textContent.substring(caretPosition, editorDiv.textContent.length);

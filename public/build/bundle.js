@@ -1,5 +1,5 @@
 
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var app = (function () {
     'use strict';
 
@@ -1145,7 +1145,9 @@ var app = (function () {
         
         modelLoaded = false;
         temperature = 0.5;
-        length = 30;
+        inputLength = 30;
+        outputLength = 30;
+
 
         async loadModel(name) {
             const modelPath = Generator.models[name];
@@ -1157,15 +1159,24 @@ var app = (function () {
             return(this.rnn.ready);
         }
 
-        async generate(seedInput) {
+        generate(seedInput, id, callback) {
             if (this.modelLoaded) {
+                // Prepare seed: shorten input & start with a full word
+                let seed = seedInput.substring(seedInput.length - this.inputLength);
+                seed = seed.substring(seed.indexOf(" ") + 1);
+
+                // Generate!
                 const data = {
-                    seed: seedInput,
+                    seed: seed,
                     temperature: this.temperature,
-                    length: this.length
+                    length: this.outputLength
                 };
-                // to do: Cancel earlier ones?
-                return(this.rnn.generate(data));
+                this.rnn.generate(data).then((generatedObj) => {
+                    const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, "");
+                    if (callback) callback(generatedText, id);
+                });
+            } else if (callback) {
+                callback(null, id);
             }
         }
     }
@@ -1185,7 +1196,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-1dc9n1y");
-    			add_location(div, file$1, 63, 0, 2256);
+    			add_location(div, file$1, 64, 0, 2292);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1235,36 +1246,37 @@ var app = (function () {
     	let generator = new Generator();
 
     	let lastCaretPosition = 0;
+    	let lastGeneratedTime = null;
 
     	onMount(async () => {
     		editorDiv.focus();
     		$$invalidate(0, editorDiv.textContent = "Once upon a time ", editorDiv);
     		updateEditor();
-
-    		generator.loadModel("Hemingway").then(() => {
-    			console.log(generator.generate("snack atack "));
-    		});
+    		generator.loadModel("Hemingway");
     	});
 
-    	function generate(seed) {
-    		// todo: actually use ML
-    		// todo: cancel previous requests
-    		setTimeout(
-    			() => {
-    				displayText(seed, " and some nonsense ");
-    			},
-    			500
-    		);
+    	function generate(fullInput) {
+    		const localTime = Date.now();
+    		lastGeneratedTime = localTime;
+
+    		generator.generate(fullInput, localTime, (generatedText, id) => {
+    			if (id == lastGeneratedTime) {
+    				displayText(fullInput, generatedText);
+    			} else {
+    				console.log("Cancelled");
+    			}
+    		});
     	}
 
     	function updateEditor() {
-    		// todo: don't update when selecting a range of text
     		const caretPosition = caretHandler.getCurrentCaretPosition();
-
-    		console.log(editorDiv.textContent);
     		let textBeforeCursor = editorDiv.textContent.substring(0, caretPosition);
     		let triggerGeneration = caretPosition > lastCaretPosition;
-    		if (triggerGeneration) generate(textBeforeCursor);
+
+    		if (triggerGeneration) {
+    			generate(textBeforeCursor);
+    		}
+
     		const primaryText = editorDiv.textContent.substring(0, caretPosition);
 
     		const secondaryText = triggerGeneration
@@ -1317,6 +1329,7 @@ var app = (function () {
     		editorDiv,
     		generator,
     		lastCaretPosition,
+    		lastGeneratedTime,
     		generate,
     		updateEditor,
     		displayText,
@@ -1328,6 +1341,7 @@ var app = (function () {
     		if ('editorDiv' in $$props) $$invalidate(0, editorDiv = $$props.editorDiv);
     		if ('generator' in $$props) generator = $$props.generator;
     		if ('lastCaretPosition' in $$props) lastCaretPosition = $$props.lastCaretPosition;
+    		if ('lastGeneratedTime' in $$props) lastGeneratedTime = $$props.lastGeneratedTime;
     		if ('caretHandler' in $$props) caretHandler = $$props.caretHandler;
     	};
 
