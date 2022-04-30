@@ -33,9 +33,8 @@ export class Generator {
             this.nextSeed = seedInput;
             this.nextCallback = callback;
         } else {
-            // Prepare seed: shorten input & start with a full word
+            // Prepare seed: shorten input
             let seed = seedInput.substring(seedInput.length - this.inputLength);
-            seed = seed.substring(seed.indexOf(" ") + 1);
 
             // Generate!
             this.generating = true;

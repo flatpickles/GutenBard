@@ -1167,9 +1167,8 @@ var app = (function () {
                 this.nextSeed = seedInput;
                 this.nextCallback = callback;
             } else {
-                // Prepare seed: shorten input & start with a full word
+                // Prepare seed: shorten input
                 let seed = seedInput.substring(seedInput.length - this.inputLength);
-                seed = seed.substring(seed.indexOf(" ") + 1);
 
                 // Generate!
                 this.generating = true;
@@ -1210,7 +1209,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-1dc9n1y");
-    			add_location(div, file$1, 57, 0, 2061);
+    			add_location(div, file$1, 57, 0, 2060);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1312,7 +1311,7 @@ var app = (function () {
 
     	function updateDelayed() {
     		// Update delayed for keydown, so that the caret can move w/ arrow keys
-    		setTimeout(updateEditor, 50);
+    		setTimeout(updateEditor, 1);
     	}
 
     	const writable_props = [];

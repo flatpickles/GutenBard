@@ -51,7 +51,7 @@
 
     function updateDelayed() {
         // Update delayed for keydown, so that the caret can move w/ arrow keys
-        setTimeout(updateEditor, 50);
+        setTimeout(updateEditor, 1);
     }
 </script>
 

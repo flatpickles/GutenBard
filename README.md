@@ -1,16 +1,22 @@
 ## GutenBard
 
-GutenBard will be a tool for improvisational writing, assisted by CharCNN (via ML5). For the time being, it is a work in progress.
+GutenBard will be a tool for improvisational writing, assisted by CharCNN (via ML5). For the time being, GutenBard is a work in progress. Following is an incomplete list of work that needs doing.
 
-### To-Do
-* properly incorporate backspaces
-* maximize available seed text
-* don't update when selecting a range of text
-* allow newlines
-* hook up settings panel
-* add to settings panel
-* font(s)
-* design for settings panel
-* share option
-* mobile optimization 
-* ... and more!
+### General to-do
+* Hook up settings panel
+* Add to settings panel
+* Share option
+* Mobile optimization
+
+### Generator optimizations
+* Don't generate partial words
+
+### Editor improvements
+* Don't update when selecting a range of text
+* Properly incorporate backspaces
+* Allow newlines
+
+### Design
+* Custom sliders for settings panel
+* Settings panel slide animation improvements
+* Font(s)
