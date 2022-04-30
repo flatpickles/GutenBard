@@ -1,10 +1,12 @@
 export class Generator {
     static models = {
-        "Hemingway": "models/hemingway/"
+        "Hemingway": "models/hemingway/",
+        "Shakespeare": "models/shakespeare/",
+        "Dubois": "models/dubois/"
     };
     
     // Parameters
-    temperature = 0.5;
+    temperature = 1;
     inputLength = 30;
     outputLength = 30;
 
@@ -44,9 +46,10 @@ export class Generator {
                 length: this.outputLength
             };
             const self = this;
+            console.log(seed);
             this.rnn.generate(data).then((generatedObj) => {
                 self.generating = false;
-                const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, "");
+                const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, " ");
 
                 // Only return data if there's nothing queued
                 if (self.nextSeed) {
@@ -55,6 +58,7 @@ export class Generator {
                     self.nextSeed = null;
                     self.nextCallback = null;
                 } else if (callback) {
+                    console.log(generatedObj);
                     callback(generatedText);
                 }
             });

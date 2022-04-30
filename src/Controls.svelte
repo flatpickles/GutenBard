@@ -3,9 +3,8 @@
 
     let controlsOpen = false;
 
-    let temperature = 0.5;
-    let generatorLength = 20;
-    let seedLength = 20;
+    let generatorLength = 30;
+    let seedLength = 30;
 
     function fadeSlide(node, options) {
 		const slideTrans = slide(node, options)
@@ -26,10 +25,6 @@
 <div class="wrapper">
     {#if controlsOpen}
     <div class="controls" transition:fadeSlide="{{duration: 200}}">
-        <div>
-            <label for="temperature">Temperature: {temperature}</label>
-            <input name="temperature" type=range bind:value={temperature} min=0 max=1 step=0.01>
-        </div>
         <div>
             <label for="length">Seed Length: {seedLength}</label>
             <input name="length" type=range bind:value={seedLength} min=1 max=100>

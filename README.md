@@ -9,6 +9,7 @@ GutenBard will be a tool for improvisational writing, assisted by CharCNN (via M
 * Mobile optimization
 
 ### Generator optimizations
+* Model generates results with partial words after a space?
 * Don't generate partial words
 
 ### Editor improvements
