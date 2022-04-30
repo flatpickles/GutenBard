@@ -9,4 +9,8 @@ GutenBard will be a tool for improvisational writing, assisted by CharCNN (via M
 * allow newlines
 * hook up settings panel
 * add to settings panel
+* font(s)
+* design for settings panel
+* share option
+* mobile optimization 
 * ... and more!

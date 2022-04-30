@@ -10,7 +10,6 @@
     // Instance variables
     let generator = new Generator();
     let lastCaretPosition = 0;
-    let lastGeneratedTime = null;
 
     onMount(async () => {
         editorDiv.focus();
@@ -21,14 +20,8 @@
     });
 
     function generate(fullInput) {
-        const localTime = Date.now();
-        lastGeneratedTime = localTime;
-        generator.generate(fullInput, localTime, (generatedText, id) => {
-            if (id == lastGeneratedTime) {
-                displayText(fullInput, generatedText);
-            } else {
-                console.log("Cancelled");
-            }
+        generator.generate(fullInput, (generatedText) => {
+            if (generatedText) displayText(fullInput, generatedText);
         });
     }
 
