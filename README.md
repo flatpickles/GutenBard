@@ -9,13 +9,13 @@ GutenBard will be a tool for improvisational writing, assisted by CharCNN (via M
 * Mobile optimization
 
 ### Generator optimizations
-* Model generates results with partial words after a space?
-* Don't generate partial words
+* Don't include partial words at the end of generated text
+* Consolidate whitespace in generated text
 
 ### Editor improvements
 * Don't update when selecting a range of text
 * Properly incorporate backspaces
-* Allow newlines
+* Fix newline handling
 
 ### Design
 * Custom sliders for settings panel

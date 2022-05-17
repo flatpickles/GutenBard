@@ -13,7 +13,7 @@
 
     onMount(async () => {
         editorDiv.focus();
-        editorDiv.textContent = "Once upon a time ";
+        editorDiv.innerText = "Once upon a time ";
         updateEditor();
 
         generator.loadModel("Hemingway");
@@ -27,14 +27,15 @@
 
     function updateEditor() {
         const caretPosition = caretHandler.getCurrentCaretPosition();
-        let textBeforeCursor = editorDiv.textContent.substring(0, caretPosition);
+        let textBeforeCursor = editorDiv.innerText.substring(0, caretPosition);
+
         let triggerGeneration = caretPosition > lastCaretPosition;
         if (triggerGeneration) {
             generate(textBeforeCursor);
         }
 
-        const primaryText = editorDiv.textContent.substring(0, caretPosition);
-        const secondaryText = triggerGeneration ? "" : editorDiv.textContent.substring(caretPosition, editorDiv.textContent.length);
+        const primaryText = editorDiv.innerText.substring(0, caretPosition);
+        const secondaryText = triggerGeneration ? "" : editorDiv.innerText.substring(caretPosition, editorDiv.innerText.length);
         displayText(primaryText, secondaryText, caretPosition);
     }
 
@@ -65,6 +66,14 @@
 <style>
     [contenteditable]:focus {
         outline: none;
+    }
+
+    [contenteditable] {
+        white-space: pre-wrap;       /* css-3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
     }
 
     div {

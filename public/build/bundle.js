@@ -1130,7 +1130,6 @@ var app = (function () {
                     length: this.outputLength
                 };
                 const self = this;
-                console.log(seed);
                 this.rnn.generate(data).then((generatedObj) => {
                     self.generating = false;
                     const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, " ");
@@ -1142,7 +1141,6 @@ var app = (function () {
                         self.nextSeed = null;
                         self.nextCallback = null;
                     } else if (callback) {
-                        console.log(generatedObj);
                         callback(generatedText);
                     }
                 });
@@ -1162,8 +1160,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
-    			attr_dev(div, "class", "svelte-1dc9n1y");
-    			add_location(div, file$1, 57, 0, 2060);
+    			attr_dev(div, "class", "svelte-180zwnr");
+    			add_location(div, file$1, 58, 0, 2051);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1216,7 +1214,7 @@ var app = (function () {
 
     	onMount(async () => {
     		editorDiv.focus();
-    		$$invalidate(0, editorDiv.textContent = "Once upon a time ", editorDiv);
+    		$$invalidate(0, editorDiv.innerText = "Once upon a time ", editorDiv);
     		updateEditor();
     		generator.loadModel("Hemingway");
     	});
@@ -1229,18 +1227,18 @@ var app = (function () {
 
     	function updateEditor() {
     		const caretPosition = caretHandler.getCurrentCaretPosition();
-    		let textBeforeCursor = editorDiv.textContent.substring(0, caretPosition);
+    		let textBeforeCursor = editorDiv.innerText.substring(0, caretPosition);
     		let triggerGeneration = caretPosition > lastCaretPosition;
 
     		if (triggerGeneration) {
     			generate(textBeforeCursor);
     		}
 
-    		const primaryText = editorDiv.textContent.substring(0, caretPosition);
+    		const primaryText = editorDiv.innerText.substring(0, caretPosition);
 
     		const secondaryText = triggerGeneration
     		? ""
-    		: editorDiv.textContent.substring(caretPosition, editorDiv.textContent.length);
+    		: editorDiv.innerText.substring(caretPosition, editorDiv.innerText.length);
 
     		displayText(primaryText, secondaryText, caretPosition);
     	}

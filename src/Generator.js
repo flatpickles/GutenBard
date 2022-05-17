@@ -46,7 +46,6 @@ export class Generator {
                 length: this.outputLength
             };
             const self = this;
-            console.log(seed);
             this.rnn.generate(data).then((generatedObj) => {
                 self.generating = false;
                 const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, " ");
@@ -58,7 +57,6 @@ export class Generator {
                     self.nextSeed = null;
                     self.nextCallback = null;
                 } else if (callback) {
-                    console.log(generatedObj);
                     callback(generatedText);
                 }
             });
