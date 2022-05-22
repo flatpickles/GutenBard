@@ -1161,7 +1161,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-180zwnr");
-    			add_location(div, file$1, 58, 0, 2051);
+    			add_location(div, file$1, 58, 0, 2056);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1173,7 +1173,9 @@ var app = (function () {
     			if (!mounted) {
     				dispose = [
     					listen_dev(div, "keydown", /*updateDelayed*/ ctx[2], false, false, false),
-    					listen_dev(div, "click", /*updateEditor*/ ctx[1], false, false, false)
+    					listen_dev(div, "click", /*updateEditor*/ ctx[1], false, false, false),
+    					listen_dev(div, "keypress", keypress_handler, false, false, false),
+    					listen_dev(div, "paste", paste_handler, false, false, false)
     				];
 
     				mounted = true;
@@ -1200,6 +1202,14 @@ var app = (function () {
 
     	return block;
     }
+
+    const keypress_handler = function (event) {
+    	if (event.key === "Enter") event.preventDefault();
+    };
+
+    const paste_handler = function (event) {
+    	event.preventDefault();
+    };
 
     function instance$1($$self, $$props, $$invalidate) {
     	let caretHandler;
@@ -1261,7 +1271,7 @@ var app = (function () {
     		lastCaretPosition = caretPosition;
     	}
 
-    	function updateDelayed() {
+    	function updateDelayed(event) {
     		// Update delayed for keydown, so that the caret can move w/ arrow keys
     		setTimeout(updateEditor, 1);
     	}

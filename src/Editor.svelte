@@ -61,6 +61,8 @@
     bind:this={editorDiv}
     on:keydown={updateDelayed}
     on:click={updateEditor}
+    on:keypress={function(event) { if (event.key === "Enter") event.preventDefault(); }}
+    on:paste={function(event) { event.preventDefault(); }}
 />
 
 <style>
