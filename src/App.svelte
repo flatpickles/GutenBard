@@ -1,10 +1,10 @@
 <script>
-	import Controls from "./Controls.svelte";
+	import About from "./About.svelte";
 	import Editor from "./Editor.svelte";
 </script>
 
 <main>
-	<Controls />
+	<About />
 	<Editor />
 </main>
 
