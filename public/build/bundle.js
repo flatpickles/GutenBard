@@ -1131,7 +1131,17 @@ var app = (function () {
                 const self = this;
                 this.rnn.generate(data).then((generatedObj) => {
                     self.generating = false;
-                    const generatedText = generatedObj.sample.replace(/(\r\n|\n|\r)/gm, " ");
+                    let generatedText = generatedObj.sample;
+
+                    // Replace all newlines with a space
+                    generatedText = generatedText.replace(/(\r\n|\n|\r)/gm, " ");
+
+                    // Consolidate multiple spaces into a single space
+                    generatedText = generatedText.replace(/\s+/g, ' ');
+
+                    // Remove text after last space, so we only end with whole words
+                    const lastSpaceIndex = generatedText.lastIndexOf(" ");
+                    generatedText = generatedText.substring(0, lastSpaceIndex);
 
                     // Only return data if there's nothing queued
                     if (self.nextSeed) {

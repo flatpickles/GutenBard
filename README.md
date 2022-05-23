@@ -8,10 +8,6 @@ GutenBard will be a tool for improvisational writing, assisted by CharCNN (via M
 * Share option
 * Mobile optimization
 
-### Generator optimizations
-* Don't include partial words at the end of generated text
-* Consolidate whitespace in generated text
-
 ### Editor improvements
 * Don't update when selecting a range of text
 * Properly incorporate backspaces
