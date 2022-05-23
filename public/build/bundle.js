@@ -1083,12 +1083,6 @@ var app = (function () {
     }
 
     class Generator {
-        static models = {
-            "Hemingway": "models/hemingway/",
-            "Shakespeare": "models/shakespeare/",
-            "Dubois": "models/dubois/"
-        };
-        
         // Parameters
         temperature = 1;
         inputLength = 30;
@@ -1101,7 +1095,7 @@ var app = (function () {
         nextCallback = null;
 
         async loadModel(name) {
-            const modelPath = Generator.models[name];
+            const modelPath = "models/hemingway/";
             this.modelLoaded = false;
             const self = this;
             this.rnn = ml5.charRNN(modelPath, (result) => {
@@ -1114,7 +1108,12 @@ var app = (function () {
             // Can't generate without a model
             if (!this.modelLoaded) callback(null);
 
-            // Either queue it OR run it
+            if (seedInput.length === 0) {
+                callback("Once upon a time ");
+                return;
+            }
+
+            // Either queue it OR run it - garbled results with 2+ simultaneous generations
             if (this.generating) {
                 this.nextSeed = seedInput;
                 this.nextCallback = callback;
@@ -1161,7 +1160,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-180zwnr");
-    			add_location(div, file$1, 58, 0, 2056);
+    			add_location(div, file$1, 60, 0, 2270);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1203,11 +1202,11 @@ var app = (function () {
     	return block;
     }
 
-    const keypress_handler = function (event) {
+    const keypress_handler = event => {
     	if (event.key === "Enter") event.preventDefault();
     };
 
-    const paste_handler = function (event) {
+    const paste_handler = event => {
     	event.preventDefault();
     };
 
@@ -1224,9 +1223,7 @@ var app = (function () {
 
     	onMount(async () => {
     		editorDiv.focus();
-    		$$invalidate(0, editorDiv.innerText = "Once upon a time ", editorDiv);
-    		updateEditor();
-    		generator.loadModel("Hemingway");
+    		generator.loadModel().then(() => updateEditor(true));
     	});
 
     	function generate(fullInput) {
@@ -1235,15 +1232,12 @@ var app = (function () {
     		});
     	}
 
-    	function updateEditor() {
+    	function updateEditor(forceUpdate) {
     		const caretPosition = caretHandler.getCurrentCaretPosition();
     		let textBeforeCursor = editorDiv.innerText.substring(0, caretPosition);
-    		let triggerGeneration = caretPosition > lastCaretPosition;
+    		let triggerGeneration = caretPosition > lastCaretPosition || forceUpdate === true;
 
-    		if (triggerGeneration) {
-    			generate(textBeforeCursor);
-    		}
-
+    		// Display update editor prior to generation
     		const primaryText = editorDiv.innerText.substring(0, caretPosition);
 
     		const secondaryText = triggerGeneration
@@ -1251,6 +1245,11 @@ var app = (function () {
     		: editorDiv.innerText.substring(caretPosition, editorDiv.innerText.length);
 
     		displayText(primaryText, secondaryText, caretPosition);
+
+    		// Generate if need be, which will trigger another editor update
+    		if (triggerGeneration) {
+    			generate(textBeforeCursor);
+    		}
     	}
 
     	function displayText(primaryText, secondaryText, caretPosition) {
@@ -1272,8 +1271,14 @@ var app = (function () {
     	}
 
     	function updateDelayed(event) {
-    		// Update delayed for keydown, so that the caret can move w/ arrow keys
-    		setTimeout(updateEditor, 1);
+    		// Update delayed for keydown, thus taking into account new caret position.
+    		setTimeout(
+    			() => {
+    				// Force update w/ backspace
+    				updateEditor(event.key === "Backspace");
+    			},
+    			1
+    		);
     	}
 
     	const writable_props = [];

@@ -1,10 +1,4 @@
 export class Generator {
-    static models = {
-        "Hemingway": "models/hemingway/",
-        "Shakespeare": "models/shakespeare/",
-        "Dubois": "models/dubois/"
-    };
-    
     // Parameters
     temperature = 1;
     inputLength = 30;
@@ -17,7 +11,7 @@ export class Generator {
     nextCallback = null;
 
     async loadModel(name) {
-        const modelPath = Generator.models[name];
+        const modelPath = "models/hemingway/";
         this.modelLoaded = false;
         const self = this;
         this.rnn = ml5.charRNN(modelPath, (result) => {
@@ -30,7 +24,12 @@ export class Generator {
         // Can't generate without a model
         if (!this.modelLoaded) callback(null);
 
-        // Either queue it OR run it
+        if (seedInput.length === 0) {
+            callback("Once upon a time ");
+            return;
+        }
+
+        // Either queue it OR run it - garbled results with 2+ simultaneous generations
         if (this.generating) {
             this.nextSeed = seedInput;
             this.nextCallback = callback;

@@ -13,10 +13,7 @@
 
     onMount(async () => {
         editorDiv.focus();
-        editorDiv.innerText = "Once upon a time ";
-        updateEditor();
-
-        generator.loadModel("Hemingway");
+        generator.loadModel().then(() => updateEditor(true));
     });
 
     function generate(fullInput) {
@@ -25,18 +22,20 @@
         });
     }
 
-    function updateEditor() {
+    function updateEditor(forceUpdate) {
         const caretPosition = caretHandler.getCurrentCaretPosition();
         let textBeforeCursor = editorDiv.innerText.substring(0, caretPosition);
-
-        let triggerGeneration = caretPosition > lastCaretPosition;
-        if (triggerGeneration) {
-            generate(textBeforeCursor);
-        }
-
+        let triggerGeneration = caretPosition > lastCaretPosition || (forceUpdate === true);
+    
+        // Display update editor prior to generation
         const primaryText = editorDiv.innerText.substring(0, caretPosition);
         const secondaryText = triggerGeneration ? "" : editorDiv.innerText.substring(caretPosition, editorDiv.innerText.length);
         displayText(primaryText, secondaryText, caretPosition);
+
+        // Generate if need be, which will trigger another editor update
+        if (triggerGeneration) {
+            generate(textBeforeCursor);
+        }
     }
 
     function displayText(primaryText, secondaryText, caretPosition) {
@@ -50,9 +49,12 @@
         lastCaretPosition = caretPosition;
     }
 
-    function updateDelayed() {
-        // Update delayed for keydown, so that the caret can move w/ arrow keys
-        setTimeout(updateEditor, 1);
+    function updateDelayed(event) {
+        // Update delayed for keydown, thus taking into account new caret position.
+        setTimeout(() => {
+            // Force update w/ backspace
+            updateEditor(event.key === "Backspace");
+        }, 1);
     }
 </script>
 
@@ -61,8 +63,8 @@
     bind:this={editorDiv}
     on:keydown={updateDelayed}
     on:click={updateEditor}
-    on:keypress={function(event) { if (event.key === "Enter") event.preventDefault(); }}
-    on:paste={function(event) { event.preventDefault(); }}
+    on:keypress={(event) => { if (event.key === "Enter") event.preventDefault(); }}
+    on:paste={(event) => { event.preventDefault(); }}
 />
 
 <style>
