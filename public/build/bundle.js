@@ -1083,16 +1083,17 @@ var app = (function () {
     }
 
     class Generator {
-        // Parameters
-        temperature = 1;
-        inputLength = 30;
-        outputLength = 30;
-
         // Generator state
         modelLoaded = false;
         generating = false;
         nextSeed = null;
         nextCallback = null;
+
+        // Constants
+        static defaultString = "Once upon a time ";
+        static temperature = 0.7;
+        static inputLength = 35;
+        static outputLength = 35;
 
         async loadModel(name) {
             const modelPath = "models/hemingway/";
@@ -1108,8 +1109,9 @@ var app = (function () {
             // Can't generate without a model
             if (!this.modelLoaded) callback(null);
 
+            // If seed is empty, use a default string
             if (seedInput.length === 0) {
-                callback("Once upon a time ");
+                callback(Generator.defaultString);
                 return;
             }
 
@@ -1119,14 +1121,14 @@ var app = (function () {
                 this.nextCallback = callback;
             } else {
                 // Prepare seed: shorten input
-                let seed = seedInput.substring(seedInput.length - this.inputLength);
+                let seed = seedInput.substring(seedInput.length - Generator.inputLength);
 
                 // Generate!
                 this.generating = true;
                 const data = {
                     seed: seed,
-                    temperature: this.temperature,
-                    length: this.outputLength
+                    temperature: Generator.temperature,
+                    length: Generator.outputLength
                 };
                 const self = this;
                 this.rnn.generate(data).then((generatedObj) => {
@@ -1139,9 +1141,15 @@ var app = (function () {
                     // Consolidate multiple spaces into a single space
                     generatedText = generatedText.replace(/\s+/g, ' ');
 
+                    // Hemingway wrote in a different time... oof
+                    if (generatedText.indexOf("nigg") >= 0) {
+                        generatedText = generatedText.replace("nigg", "tig"); // tigers are ok
+                    }
+
                     // Remove text after last space, so we only end with whole words
                     const lastSpaceIndex = generatedText.lastIndexOf(" ");
                     generatedText = generatedText.substring(0, lastSpaceIndex);
+
 
                     // Only return data if there's nothing queued
                     if (self.nextSeed) {
@@ -1169,7 +1177,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
-    			attr_dev(div, "class", "svelte-180zwnr");
+    			attr_dev(div, "class", "svelte-yqx1dx");
     			add_location(div, file$1, 60, 0, 2270);
     		},
     		l: function claim(nodes) {
@@ -1370,7 +1378,7 @@ var app = (function () {
     			create_component(controls.$$.fragment);
     			t = space();
     			create_component(editor.$$.fragment);
-    			attr_dev(main, "class", "svelte-tjv8ly");
+    			attr_dev(main, "class", "svelte-4ulkl8");
     			add_location(main, file, 5, 0, 102);
     		},
     		l: function claim(nodes) {

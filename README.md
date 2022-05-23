@@ -16,4 +16,3 @@ GutenBard will be a tool for improvisational writing, assisted by CharCNN (via M
 ### Design
 * Custom sliders for settings panel
 * Settings panel slide animation improvements
-* Font(s)

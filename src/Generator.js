@@ -1,14 +1,15 @@
 export class Generator {
-    // Parameters
-    temperature = 1;
-    inputLength = 30;
-    outputLength = 30;
-
     // Generator state
     modelLoaded = false;
     generating = false;
     nextSeed = null;
     nextCallback = null;
+
+    // Constants
+    static defaultString = "Once upon a time ";
+    static temperature = 0.7;
+    static inputLength = 35;
+    static outputLength = 35;
 
     async loadModel(name) {
         const modelPath = "models/hemingway/";
@@ -24,8 +25,9 @@ export class Generator {
         // Can't generate without a model
         if (!this.modelLoaded) callback(null);
 
+        // If seed is empty, use a default string
         if (seedInput.length === 0) {
-            callback("Once upon a time ");
+            callback(Generator.defaultString);
             return;
         }
 
@@ -35,14 +37,14 @@ export class Generator {
             this.nextCallback = callback;
         } else {
             // Prepare seed: shorten input
-            let seed = seedInput.substring(seedInput.length - this.inputLength);
+            let seed = seedInput.substring(seedInput.length - Generator.inputLength);
 
             // Generate!
             this.generating = true;
             const data = {
                 seed: seed,
-                temperature: this.temperature,
-                length: this.outputLength
+                temperature: Generator.temperature,
+                length: Generator.outputLength
             };
             const self = this;
             this.rnn.generate(data).then((generatedObj) => {
@@ -55,9 +57,15 @@ export class Generator {
                 // Consolidate multiple spaces into a single space
                 generatedText = generatedText.replace(/\s+/g, ' ');
 
+                // Hemingway wrote in a different time... oof
+                if (generatedText.indexOf("nigg") >= 0) {
+                    generatedText = generatedText.replace("nigg", "tig"); // tigers are ok
+                }
+
                 // Remove text after last space, so we only end with whole words
                 const lastSpaceIndex = generatedText.lastIndexOf(" ");
                 generatedText = generatedText.substring(0, lastSpaceIndex);
+
 
                 // Only return data if there's nothing queued
                 if (self.nextSeed) {
