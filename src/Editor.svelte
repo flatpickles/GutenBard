@@ -50,6 +50,10 @@
     }
 
     function updateDelayed(event) {
+        // TODO - only delay the stuff that ACTUALLY needs to be delayed, and do the rest
+        // immediately / before rendering. This at least must include clearing the previous
+        // suggestion, if applicable (so it doesn't scoot with the cursor)
+
         // Update delayed for keydown, thus taking into account new caret position.
         setTimeout(() => {
             // Force update w/ backspace

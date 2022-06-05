@@ -25,15 +25,13 @@
 <div class="wrapper">
     {#if aboutOpen}
     <div class="about" transition:fadeSlide="{{duration: 200}}">
-        <h1>
-            GutenBard
-        </h1>
-
         <p>
-            GutenBard is a tool for improvisational writing.
+            <span class="title">GutenBard</span> is a tool for improvisational writing.
             It uses a neural network trained on Hemingway's written works to suggest new words based on your inputs.
-            As with most tech demos, this could be improved in many ways, but hopefully you'll find some inspiration here nonetheless.
-            Git repo <a href="https://github.com/flatpickles/GutenBard">here</a>, if you're into that sort of thing.
+            With power of computer, please make weird!
+        </p>
+        <p>
+            Built by <a href="http://flatpickles.com">this guy</a>. Dig the code <a href="https://github.com/flatpickles/GutenBard">over here</a>.
         </p>
     </div>
     {/if}
@@ -41,11 +39,10 @@
 </div>
 
 <style>
-    h1 {
-        font-size: 24px;
-        padding: 0;
-        margin: 0;
-        padding-bottom: 8px;
+    .title {
+        font-weight: bold;
+        font-size: 20px;
+        padding-right: 2px;
     }
 
     p {
@@ -54,8 +51,12 @@
         margin: 0;
     }
 
+    p + p {
+        margin-top: 8px;
+    }
+
     a {
-        color: #777;
+        color: rgb(91, 105, 158);
     }
 
     .wrapper {
@@ -70,7 +71,7 @@
         border-radius: 10px;
         border: 0px solid #000;
         padding: 16px;
-        background-color: #eee;
+        background-color: #f2f2f2;
         margin-right: 8px;
         margin-bottom: 16px;
     }

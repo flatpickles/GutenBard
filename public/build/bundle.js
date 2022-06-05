@@ -665,44 +665,62 @@ var app = (function () {
     // (26:4) {#if aboutOpen}
     function create_if_block(ctx) {
     	let div;
-    	let h1;
+    	let p0;
+    	let span;
     	let t1;
-    	let p;
     	let t2;
-    	let a;
-    	let t4;
+    	let p1;
+    	let t3;
+    	let a0;
+    	let t5;
+    	let a1;
+    	let t7;
     	let div_transition;
     	let current;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			h1 = element("h1");
-    			h1.textContent = "GutenBard";
-    			t1 = space();
-    			p = element("p");
-    			t2 = text("GutenBard is a tool for improvisational writing.\n            It uses a neural network trained on Hemingway's written works to suggest new words based on your inputs.\n            As with most tech demos, this could be improved in many ways, but hopefully you'll find some inspiration here nonetheless.\n            Git repo ");
-    			a = element("a");
-    			a.textContent = "here";
-    			t4 = text(", if you're into that sort of thing.");
-    			attr_dev(h1, "class", "svelte-uboo4b");
-    			add_location(h1, file$2, 27, 8, 530);
-    			attr_dev(a, "href", "https://github.com/flatpickles/GutenBard");
-    			attr_dev(a, "class", "svelte-uboo4b");
-    			add_location(a, file$2, 35, 21, 918);
-    			attr_dev(p, "class", "svelte-uboo4b");
-    			add_location(p, file$2, 31, 8, 580);
-    			attr_dev(div, "class", "about svelte-uboo4b");
+    			p0 = element("p");
+    			span = element("span");
+    			span.textContent = "GutenBard";
+    			t1 = text(" is a tool for improvisational writing.\n            It uses a neural network trained on Hemingway's written works to suggest new words based on your inputs.\n            With power of computer, please make weird!");
+    			t2 = space();
+    			p1 = element("p");
+    			t3 = text("Built by ");
+    			a0 = element("a");
+    			a0.textContent = "this guy";
+    			t5 = text(". Dig the code ");
+    			a1 = element("a");
+    			a1.textContent = "over here";
+    			t7 = text(".");
+    			attr_dev(span, "class", "title svelte-2x5yjv");
+    			add_location(span, file$2, 28, 12, 546);
+    			attr_dev(p0, "class", "svelte-2x5yjv");
+    			add_location(p0, file$2, 27, 8, 530);
+    			attr_dev(a0, "href", "http://flatpickles.com");
+    			attr_dev(a0, "class", "svelte-2x5yjv");
+    			add_location(a0, file$2, 33, 21, 840);
+    			attr_dev(a1, "href", "https://github.com/flatpickles/GutenBard");
+    			attr_dev(a1, "class", "svelte-2x5yjv");
+    			add_location(a1, file$2, 33, 81, 900);
+    			attr_dev(p1, "class", "svelte-2x5yjv");
+    			add_location(p1, file$2, 32, 8, 815);
+    			attr_dev(div, "class", "about svelte-2x5yjv");
     			add_location(div, file$2, 26, 4, 461);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			append_dev(div, h1);
-    			append_dev(div, t1);
-    			append_dev(div, p);
-    			append_dev(p, t2);
-    			append_dev(p, a);
-    			append_dev(p, t4);
+    			append_dev(div, p0);
+    			append_dev(p0, span);
+    			append_dev(p0, t1);
+    			append_dev(div, t2);
+    			append_dev(div, p1);
+    			append_dev(p1, t3);
+    			append_dev(p1, a0);
+    			append_dev(p1, t5);
+    			append_dev(p1, a1);
+    			append_dev(p1, t7);
     			current = true;
     		},
     		i: function intro(local) {
@@ -754,10 +772,10 @@ var app = (function () {
     			span = element("span");
     			span.textContent = "?!";
     			attr_dev(span, "id", "icon");
-    			attr_dev(span, "class", "svelte-uboo4b");
+    			attr_dev(span, "class", "svelte-2x5yjv");
     			toggle_class(span, "selected", /*aboutOpen*/ ctx[0]);
-    			add_location(span, file$2, 39, 4, 1052);
-    			attr_dev(div, "class", "wrapper svelte-uboo4b");
+    			add_location(span, file$2, 37, 4, 1004);
+    			attr_dev(div, "class", "wrapper svelte-2x5yjv");
     			add_location(div, file$2, 24, 0, 415);
     		},
     		l: function claim(nodes) {
@@ -1085,7 +1103,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "contenteditable", "true");
     			attr_dev(div, "class", "svelte-yqx1dx");
-    			add_location(div, file$1, 60, 0, 2270);
+    			add_location(div, file$1, 64, 0, 2528);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1196,6 +1214,9 @@ var app = (function () {
     	}
 
     	function updateDelayed(event) {
+    		// TODO - only delay the stuff that ACTUALLY needs to be delayed, and do the rest
+    		// immediately / before rendering. This at least must include clearing the previous
+    		// suggestion, if applicable (so it doesn't scoot with the cursor)
     		// Update delayed for keydown, thus taking into account new caret position.
     		setTimeout(
     			() => {
