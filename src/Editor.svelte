@@ -13,7 +13,7 @@
 
     onMount(async () => {
         editorDiv.focus();
-        generator.loadModel().then(() => updateEditor(true));
+        generator.loadModel();
     });
 
     function generate(fullInput) {
@@ -116,7 +116,9 @@
     on:click={onClick}
     on:keydown={onKeyDown}
     on:paste={(event) => { event.preventDefault(); }}
-/>
+>
+    <span id="secondaryText">{Generator.defaultString}</span>
+</div>
 
 <style>
     [contenteditable]:focus {
