@@ -40,9 +40,7 @@
 
 <style>
     .title {
-        font-weight: bold;
-        font-size: 20px;
-        padding-right: 2px;
+        font-weight: bolder;
     }
 
     p {

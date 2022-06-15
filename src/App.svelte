@@ -9,7 +9,7 @@
 </main>
 
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&display=swap');
 
 	main {
 		padding: 1em;
