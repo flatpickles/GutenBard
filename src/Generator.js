@@ -21,6 +21,10 @@ export class Generator {
         return(this.rnn.ready);
     }
 
+    cancelGeneration() {
+        this.cancelNextGeneration = true;
+    }
+
     generate(seedInput, callback) {
         // Can't generate without a model
         if (!this.modelLoaded) callback(null);
@@ -47,8 +51,10 @@ export class Generator {
                 length: Generator.outputLength
             };
             const self = this;
+            this.cancelNextGeneration = false;
             this.rnn.generate(data).then((generatedObj) => {
                 self.generating = false;
+                if (this.cancelNextGeneration) return;
                 let generatedText = generatedObj.sample;
 
                 // Replace all newlines with a space
@@ -68,7 +74,7 @@ export class Generator {
 
 
                 // Only return data if there's nothing queued
-                if (self.nextSeed) {
+                if (callback && self.nextSeed) {
                     callback(null);
                     self.generate(self.nextSeed, self.nextCallback);
                     self.nextSeed = null;

@@ -29,7 +29,8 @@
         let triggerGeneration = caretPosition > lastCaretPosition || (forceGeneration === true);
         
         if (!triggerGeneration || forceDisplayUpdate === true) {
-            // Otherwise, make sure style is updated
+            generator.cancelGeneration();
+            // Make sure style is updated
             const primaryText = editorDiv.innerText.substring(0, caretPosition);
             const secondaryText = triggerGeneration ? "" : editorDiv.innerText.substring(caretPosition, editorDiv.innerText.length);
             displayText(primaryText, secondaryText, caretPosition);
